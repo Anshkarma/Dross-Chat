@@ -1,0 +1,1 @@
+javac -classpath c:\Dross-Chat\Chat-Network\server-side\depedencies\*;c:\Dross-Chat\Chat-Network\server-side\classes;. -d c:\Dross-Chat\Chat-Network\server-side\classes DrossChatServer.java

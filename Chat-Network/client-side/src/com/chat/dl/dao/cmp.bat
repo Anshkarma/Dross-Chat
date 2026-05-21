@@ -1,0 +1,1 @@
+javac -classpath C:\Dross-Chat\Chat-Network\client-side\depedencies\*;C:\Dross-Chat\Chat-Network\client-side\classes;. -d C:\Dross-Chat\Chat-Network\client-side\classes RequestSender.java

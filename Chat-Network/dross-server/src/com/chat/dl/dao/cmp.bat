@@ -1,0 +1,1 @@
+javac -cp C:\Dross-Chat\DrossApplication\depedencies\*;C:\Dross-Chat\DrossApplication\classes;C:\mysql\mysql-connector-java-8.0.20.jar -d C:\Dross-Chat\DrossApplication\classes DrossDAO.java
