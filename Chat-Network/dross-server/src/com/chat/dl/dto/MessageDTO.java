@@ -10,6 +10,7 @@ private java.time.Instant time;
 private int groupId;
 private String content;
 private boolean isDelivered;
+private String senderName;
 public MessageDTO()
 {
 this.senderId=0;
@@ -37,6 +38,14 @@ this.senderId=senderId;
 public int getSenderId()
 {
 return this.senderId;
+}
+public void setSenderName(int senderName)
+{
+this.senderName=senderName;
+}
+public int getSenderId()
+{
+return this.senderName;
 }
 public void setReceiverId(int recieverId)
 {
