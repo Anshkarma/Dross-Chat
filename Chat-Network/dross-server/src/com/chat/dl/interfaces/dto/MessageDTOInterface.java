@@ -13,4 +13,5 @@ public void setContent(String content);
 public String getContent();
 public void setIsDelivered(boolean isDelivered);
 public boolean getIsDelivered();
+public String getSenderName();
 }
