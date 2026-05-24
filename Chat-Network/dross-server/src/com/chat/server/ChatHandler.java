@@ -37,6 +37,7 @@ for(MessageDTOInterface m:messages)
 responseData+=m.getSenderName()+Protocol.SEPERATOR;
 responseData+=m.getContent()+Protocol.SEPERATOR;
 }
+ddao.deleteMessagesForUser(receiverId);
 return responseData;
 }catch(DrossDAOException drossDAOException)
 {
