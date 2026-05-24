@@ -422,4 +422,28 @@ throw new DrossDAOException("Password must be at least 6 characters");
 }
 }
 }
+public int getUserIdByName(String userName) throws DrossDAOException
+{
+try
+{
+connection=DAOConnection.getConnection();
+String sql="select user_id from users where user_name=?";
+preparedStatement=connection.prepareStatement(sql);
+preparedStatement.setString(1,userName);
+resultSet=preparedStatement.executeQuery();
+int userId=-1;
+if(resultSet.next())
+{
+userId=resultSet.getInt("user_id");
+}
+resultSet.close();
+preparedStatement.close();
+connection.close();
+return userId;
+}catch(Exception e)
+{
+e.printStackTrace();
+throw new DrossDAOException(e.getMessage());
+}
+}
 }
