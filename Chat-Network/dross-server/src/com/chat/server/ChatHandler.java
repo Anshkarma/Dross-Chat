@@ -18,76 +18,49 @@ if(cmd.toUpperCase().equals(Protocol.SEND))
 {
 if(splits.length!=5)
 {
-return Protocol.FAILURE+Protocol.SEPERATOR+"DAOException"+Protocol.SEPERATOR+"INSUFFICIENT DATA TO SEND MESSAGE";
+return Protocol.FAILURE+Protocol.SEPERATOR+"INSUFFICIENT DATA TO SEND MESSAGE";
 }
-int senderId;
-int targetId;
-try
-{
-senderId=Integer.parseInt(splits[2].trim());
-if(senderId<=0)
-{
-return Protocol.FAILURE+Protocol.SEPERATOR+"Invalid sender ID ("+splits[2]+")";
-}
-}catch(NumberFormatException numberFormatException)
-{
-return Protocol.FAILURE+Protocol.SEPERATOR+"Invalid sender ID";
-}
-try
-{
-targetId=Integer.parseInt(splits[3].trim());
-if(targetId<=0)
-{
-return Protocol.FAILURE+Protocol.SEPERATOR+"Invalid target ID ("+splits[3]+")";
-}
-}catch(NumberFormatException numberFormatException)
-{
-return Protocol.FAILURE+Protocol.SEPERATOR+"Invalid target ID";
-}
+String senderName=splits[2].trim();
+String receiverName=splits[3].trim();
 String content=splits[4].trim();
+if(senderName.length()==0)
+{
+return Protocol.FAILURE+Protocol.SEPERATOR+"Invalid sender name";
+}
+if(receiverName.length()==0)
+{
+return Protocol.FAILURE+Protocol.SEPERATOR+"Invalid receiver name";
+}
 if(content.length()==0)
 {
 return Protocol.FAILURE+Protocol.SEPERATOR+"Message cannot be empty";
 }
-if(senderId==targetId)
+if(senderName.equals(receiverName))
 {
 return Protocol.FAILURE+Protocol.SEPERATOR+"You cannot message yourself";
 }
-boolean isGroup=DrossChatServer.groupMap.containsKey(String.valueOf(targetId));
 try
 {
-MessageDTOInterface messageDTO;
-if(isGroup)
+DrossDAOInterface ddao=new DrossDAO();
+int senderId=ddao.getUserIdByName(senderName);
+int receiverId=ddao.getUserIdByName(receiverName);
+if(senderId==-1)
 {
-messageDTO=new MessageDTO(senderId,0,Instant.now(),targetId,content,false);
+return Protocol.FAILURE+Protocol.SEPERATOR+"Sender not found: "+senderName;
+}
+if(receiverId==-1)
+{
+return Protocol.FAILURE+Protocol.SEPERATOR+"Receiver not found: "+receiverName;
+}
+MessageDTOInterface messageDTO=new MessageDTO(senderId,receiverId,Instant.now(),0,content,false);
 saveMessage(messageDTO);
-Set<String> members=DrossChatServer.groupMap.get(String.valueOf(targetId));
-String something=Protocol.SUCCESS+Protocol.SEPERATOR+"[GROUP:"+targetId+"] "+senderId+": "+content;
-for(String member:members)
-{
-PrintWriter pw=DrossChatServer.clientMap.get(member);
+PrintWriter pw=DrossChatServer.clientMap.get(receiverName);
 if(pw!=null)
 {
-pw.println(Protocol.SUCCESS+Protocol.SEPERATOR+"Done");
+pw.println(Protocol.SUCCESS+Protocol.SEPERATOR+"[PM:"+senderName+"] "+content);
 pw.flush();
 }
-}
-return Protocol.SUCCESS+Protocol.SEPERATOR+"Message sent to group "+targetId;
-}
-else
-{
-messageDTO=new MessageDTO(senderId,targetId,Instant.now(),0,content,false);
-saveMessage(messageDTO);
-PrintWriter pw=DrossChatServer.clientMap.get(String.valueOf(targetId));
-if(pw==null)
-{
-return Protocol.FAILURE+Protocol.SEPERATOR+"User is not online";
-}
-String something=Protocol.SUCCESS+Protocol.SEPERATOR+"[PM:"+targetId+"] "+senderId+": "+content;
-pw.println(something);
-pw.flush();
-return Protocol.SUCCESS+Protocol.SEPERATOR+"Message sent to user ";
-}
+return Protocol.SUCCESS+Protocol.SEPERATOR+"Message sent";
 }catch(DrossDAOException drossDAOException)
 {
 return Protocol.FAILURE+Protocol.SEPERATOR+drossDAOException.getMessage();
