@@ -3,7 +3,7 @@ WORKDIR /app
 COPY . /app
 RUN javac -cp "classes:depedencies/*:." -d classes \
     src/com/client/server/protocol/*.java \
-    src/com/chat/dl/exception/*.java \
+    src/com/chat/dl/exceptions /*.java \
     src/com/chat/dl/interfaces/dto/*.java \
     src/com/chat/dl/interfaces/dao/*.java \
     src/com/chat/dl/dto/*.java \
