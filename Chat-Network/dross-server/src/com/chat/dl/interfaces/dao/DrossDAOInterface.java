@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.time.Instant;
 public interface DrossDAOInterface
 {
+public void deleteMessagesForUser(int receiverId) throws DrossDAOException;
 void loginUser(LoginDTOInterface loginDTO) throws DrossDAOException;
 void updateDetails(LoginDTOInterface loginDTO) throws DrossDAOException;
 void deleteUser(int userID) throws DrossDAOException;
