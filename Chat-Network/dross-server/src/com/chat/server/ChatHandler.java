@@ -17,31 +17,35 @@ String cmd=splits[1];
 
 if(cmd.equals(Protocol.GET_MSGS))
 {
+if(splits.length!=3)
+{
+return Protocol.FAILURE+Protocol.SEPERATOR+"Insufficient data";
+}
+String receiverName=splits[2].trim();
+if(receiverName.length()==0)
+{
+return Protocol.FAILURE+Protocol.SEPERATOR+"Invalid receiver name";
+}
 try
 {
-LinkedList<MessageDTOInterface> messages=getMessagesBetweenUsers();
-String responseData=Protocol.SUCCESS;
-responseData+=Protocol.SEPERATOR;
-ListIterator<MessageDTOInterface> iter=messages.listIterator();
-MessageDTOInterface messageDTO;
-while(iter.hasNext())
+DrossDAOInterface ddao=new DrossDAO();
+int receiverId=ddao.getUserIdByName(receiverName);
+if(receiverId==-1) return Protocol.FAILURE+Protocol.SEPERATOR+"User not found";
+LinkedList<MessageDTOInterface> messages=ddao.getMessagesForUser(receiverId);
+String responseData=Protocol.SUCCESS+Protocol.SEPERATOR;
+for(MessageDTOInterface m:messages)
 {
-messageDTO=iter.next();
-responseData+=messageDTO.getSenderId();
-responseData+=Protocol.SEPERATOR;
-responseData+=messageDTO.getReceiverId();
-responseData+=Protocol.SEPERATOR;
-responseData+=messageDTO.getContent();
-responseData+=Protocol.SEPERATOR;
-responseData+=messageDTO.getTimestamp();
-responseData+=Protocol.SEPERATOR;
+responseData+=m.getSenderName()+Protocol.SEPERATOR;
+responseData+=m.getContent()+Protocol.SEPERATOR;
 }
+ddao.deleteMessagesForUser(receiverId);
 return responseData;
 }catch(DrossDAOException drossDAOException)
 {
-return "EXCEPTION"+Protocol.SEPERATOR+drossDAOException.getMessage();
+return Protocol.FAILURE+Protocol.SEPERATOR+drossDAOException.getMessage();
 }
 }
+
 
 if(cmd.toUpperCase().equals(Protocol.SEND))
 {
