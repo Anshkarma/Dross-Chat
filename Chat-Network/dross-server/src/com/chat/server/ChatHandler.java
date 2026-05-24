@@ -14,88 +14,7 @@ public String handleRequest(String splits[])
 {
 System.out.println("Chat Handler:Handler got called");
 String cmd=splits[1];
-if(cmd.equals(Protocol.GET_MSGS))
-{
-if(splits.length!=3)
-{
-return Protocol.FAILURE+Protocol.SEPERATOR+"Insufficient data";
-}
-String receiverName=splits[2].trim();
-if(receiverName.length()==0)
-{
-return Protocol.FAILURE+Protocol.SEPERATOR+"Invalid receiver name";
-}
-try
-{
-DrossDAOInterface ddao=new DrossDAO();
-int receiverId=ddao.getUserIdByName(receiverName);
-if(receiverId==-1) return Protocol.FAILURE+Protocol.SEPERATOR+"User not found";
-LinkedList<MessageDTOInterface> messages=ddao.getMessagesForUser(receiverId);
-String responseData=Protocol.SUCCESS+Protocol.SEPERATOR;
-for(MessageDTOInterface m:messages)
-{
-responseData+=m.getSenderName()+Protocol.SEPERATOR;
-responseData+=m.getContent()+Protocol.SEPERATOR;
-}
-ddao.deleteMessagesForUser(receiverId);
-return responseData;
-}catch(DrossDAOException drossDAOException)
-{
-return Protocol.FAILURE+Protocol.SEPERATOR+drossDAOException.getMessage();
-}
-}
-if(cmd.toUpperCase().equals(Protocol.SEND))
-{
-if(splits.length!=5)
-{
-return Protocol.FAILURE+Protocol.SEPERATOR+"INSUFFICIENT DATA TO SEND MESSAGE";
-}
-String senderName=splits[2].trim();
-String receiverName=splits[3].trim();
-String content=splits[4].trim();
-if(senderName.length()==0)
-{
-return Protocol.FAILURE+Protocol.SEPERATOR+"Invalid sender name";
-}
-if(receiverName.length()==0)
-{
-return Protocol.FAILURE+Protocol.SEPERATOR+"Invalid receiver name";
-}
-if(content.length()==0)
-{
-return Protocol.FAILURE+Protocol.SEPERATOR+"Message cannot be empty";
-}
-if(senderName.equals(receiverName))
-{
-return Protocol.FAILURE+Protocol.SEPERATOR+"You cannot message yourself";
-}
-try
-{
-DrossDAOInterface ddao=new DrossDAO();
-int senderId=ddao.getUserIdByName(senderName);
-int receiverId=ddao.getUserIdByName(receiverName);
-if(senderId==-1)
-{
-return Protocol.FAILURE+Protocol.SEPERATOR+"Sender not found: "+senderName;
-}
-if(receiverId==-1)
-{
-return Protocol.FAILURE+Protocol.SEPERATOR+"Receiver not found: "+receiverName;
-}
-MessageDTOInterface messageDTO=new MessageDTO(senderId,receiverId,Instant.now(),0,content,false);
-saveMessage(messageDTO);
-PrintWriter pw=DrossChatServer.clientMap.get(receiverName);
-if(pw!=null)
-{
-pw.println(Protocol.SUCCESS+Protocol.SEPERATOR+"[PM:"+senderName+"] "+content);
-pw.flush();
-}
-return Protocol.SUCCESS+Protocol.SEPERATOR+"Message sent";
-}catch(DrossDAOException drossDAOException)
-{
-return Protocol.FAILURE+Protocol.SEPERATOR+drossDAOException.getMessage();
-}
-}
+
 if(cmd.equals(Protocol.GET_MSGS))
 {
 try
@@ -123,6 +42,7 @@ return responseData;
 return "EXCEPTION"+Protocol.SEPERATOR+drossDAOException.getMessage();
 }
 }
+
 if(cmd.equals(Protocol.DELETE_MSG))
 {
 if(splits.length!=3)
