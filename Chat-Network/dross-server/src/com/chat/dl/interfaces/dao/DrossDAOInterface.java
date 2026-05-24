@@ -22,4 +22,5 @@ void drossValidation(boolean isUpdate,LoginDTOInterface loginDTO) throws DrossDA
 boolean userIDExists(int userId) throws DrossDAOException;
 boolean phoneNumberExists(String phoneNumber) throws DrossDAOException;
 public int getUserIdByName(String name) throws DrossDAOException;
+public LinkedList<MessageDTOInterface> getMessagesForUser(int receiverId) throws DrossDAOException;
 }
