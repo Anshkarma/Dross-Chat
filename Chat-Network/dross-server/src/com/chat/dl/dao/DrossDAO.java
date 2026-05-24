@@ -446,4 +446,31 @@ e.printStackTrace();
 throw new DrossDAOException(e.getMessage());
 }
 }
+public LinkedList<MessageDTOInterface> getMessagesForUser(int receiverId) throws DrossDAOException
+{
+try
+{
+connection=DAOConnection.getConnection();
+String sql="select u.user_name, m.content from messages m join users u on m.sender_id=u.user_id where m.receiver_id=? order by m.send_at asc";
+preparedStatement=connection.prepareStatement(sql);
+preparedStatement.setInt(1,receiverId);
+resultSet=preparedStatement.executeQuery();
+LinkedList<MessageDTOInterface> messages=new LinkedList<>();
+while(resultSet.next())
+{
+MessageDTO m=new MessageDTO();
+m.setSenderName(resultSet.getString("user_name"));
+m.setContent(resultSet.getString("content"));
+messages.add(m);
+}
+resultSet.close();
+preparedStatement.close();
+connection.close();
+return messages;
+}catch(Exception e)
+{
+e.printStackTrace();
+throw new DrossDAOException(e.getMessage());
+}
+}
 }
