@@ -14,6 +14,35 @@ public String handleRequest(String splits[])
 {
 System.out.println("Chat Handler:Handler got called");
 String cmd=splits[1];
+if(cmd.equals(Protocol.GET_MSGS))
+{
+if(splits.length!=3)
+{
+return Protocol.FAILURE+Protocol.SEPERATOR+"Insufficient data";
+}
+String receiverName=splits[2].trim();
+if(receiverName.length()==0)
+{
+return Protocol.FAILURE+Protocol.SEPERATOR+"Invalid receiver name";
+}
+try
+{
+DrossDAOInterface ddao=new DrossDAO();
+int receiverId=ddao.getUserIdByName(receiverName);
+if(receiverId==-1) return Protocol.FAILURE+Protocol.SEPERATOR+"User not found";
+LinkedList<MessageDTOInterface> messages=ddao.getMessagesForUser(receiverId);
+String responseData=Protocol.SUCCESS+Protocol.SEPERATOR;
+for(MessageDTOInterface m:messages)
+{
+responseData+=m.getSenderName()+Protocol.SEPERATOR;
+responseData+=m.getContent()+Protocol.SEPERATOR;
+}
+return responseData;
+}catch(DrossDAOException drossDAOException)
+{
+return Protocol.FAILURE+Protocol.SEPERATOR+drossDAOException.getMessage();
+}
+}
 if(cmd.toUpperCase().equals(Protocol.SEND))
 {
 if(splits.length!=5)
