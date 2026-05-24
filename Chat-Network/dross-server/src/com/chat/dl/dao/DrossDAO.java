@@ -473,4 +473,22 @@ e.printStackTrace();
 throw new DrossDAOException(e.getMessage());
 }
 }
+
+public void deleteMessagesForUser(int receiverId) throws DrossDAOException
+{
+try
+{
+connection=DAOConnection.getConnection();
+String sql="delete from messages where receiver_id=?";
+preparedStatement=connection.prepareStatement(sql);
+preparedStatement.setInt(1,receiverId);
+preparedStatement.executeUpdate();
+preparedStatement.close();
+connection.close();
+}catch(Exception e)
+{
+e.printStackTrace();
+throw new DrossDAOException(e.getMessage());
+}
+}
 }
