@@ -20,7 +20,6 @@ this.groupId=0;
 this.content="";
 this.isDelivered=false;
 }
-
 public MessageDTO(int senderId,int recieverId,java.time.Instant time,int groupId,String content,boolean isDelivered)
 {
 this.senderId=senderId;
@@ -30,7 +29,6 @@ this.groupId=groupId;
 this.content=content;
 this.isDelivered=isDelivered;
 }
-
 public void setSenderId(int senderId)
 {
 this.senderId=senderId;
@@ -39,11 +37,11 @@ public int getSenderId()
 {
 return this.senderId;
 }
-public void setSenderName(int senderName)
+public void setSenderName(String senderName)
 {
 this.senderName=senderName;
 }
-public int getSenderId()
+public String getSenderName()
 {
 return this.senderName;
 }
@@ -87,5 +85,4 @@ public boolean getIsDelivered()
 {
 return this.isDelivered;
 }
-
 }
